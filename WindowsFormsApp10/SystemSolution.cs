@@ -21,7 +21,6 @@ namespace WindowsFormsApp10
         private int _score;
 
         public int Score { get { return _score; } set { this._score = value; } }
-
         public SystemSolution(double eta, double ro, double alpha, double mu0, double fi, double q, double X10 , double mu, double alpha0)
         {
             _eta = eta;
@@ -47,9 +46,9 @@ namespace WindowsFormsApp10
                 _z = z,
                 _z1 = z1,
                 _tau = tau;
-            double[] _RungeKutta = new double[4] { z, z1, y, x};
+            double[] _RungeKutta = new double[4] { y, x, z, z1};
             getscore(x, y);
-            if(Score == 1)
+            if(_score == 1)
             {
                 _x = _X10;
             }
@@ -57,18 +56,18 @@ namespace WindowsFormsApp10
             {
                 if (i < 3 && i != 0)
                 {
-                    _x = x + k4[i - 1] / 2;
-                    _y = y + k3[i - 1] / 2;
-                    _z = z + k1[i - 1] / 2;
-                    _z1 = z1 + k2[i - 1] / 2;
+                    _x = x + k2[i - 1] / 2;
+                    _y = y + k1[i - 1] / 2;
+                    _z = z + k3[i - 1] / 2;
+                    _z1 = z1 + k4[i - 1] / 2;
                     _tau = tau + h / 2;
                 }
                 if (i == 3)
                 {
-                    _x = x + k4[i - 1];
-                    _y = y + k3[i - 1];
-                    _z = z + k1[i - 1];
-                    _z1 = z1 + k2[i - 1];
+                    _x = x + k2[i - 1];
+                    _y = y + k1[i - 1];
+                    _z = z + k3[i - 1];
+                    _z1 = z1 + k4[i - 1];
                     _tau = tau + h;
                 }
                 k2[i] = h * getXfunction(_z1);
@@ -76,47 +75,37 @@ namespace WindowsFormsApp10
                 k4[i] = h * getZ1function(_x, _y, _z1);
                 k3[i] = h * getZfunction(_x, _y, _tau);
             }
-            _RungeKutta[0] += (k1[0] + k1[1] * 2 + k1[2] * 2 + k1[3]) / 6; // z
-            _RungeKutta[1] += (k2[0] + k2[1] * 2 + k2[2] * 2 + k2[3]) / 6; // z1
-            _RungeKutta[2] += (k3[0] + k3[1] * 2 + k3[2] * 2 + k3[3]) / 6; // y
-            _RungeKutta[3] += (k4[0] + k4[1] * 2 + k4[2] * 2 + k4[3]) / 6; // x
+            _RungeKutta[0] += (k1[0] + k1[1] * 2 + k1[2] * 2 + k1[3]) / 6; // y
+            _RungeKutta[1] += (k2[0] + k2[1] * 2 + k2[2] * 2 + k2[3]) / 6; // x
+            _RungeKutta[2] += (k3[0] + k3[1] * 2 + k3[2] * 2 + k3[3]) / 6; // z
+            _RungeKutta[3] += (k4[0] + k4[1] * 2 + k4[2] * 2 + k4[3]) / 6; // z1
             if (k3[0] == 0)
             {
-                _RungeKutta[1] = z1;
-                _RungeKutta[3] = x;
+                _RungeKutta[3] = z1;
+                _RungeKutta[1] = x;
             }
 
             return _RungeKutta;
         }
         private void getscore(double x, double y)
         {
-            Score = -1;
-            if (y > x + _eta && (Score == -1 || Score == 0))
-            {
-                Score = 0;
-            }
-            if ((Score != 2 && Score != -1) && (y == x + _eta || (_alpha * _alpha) * (y - _X10 - _eta) < _mu0 * _fi - _ro + _q))
-            {
-                Score = 1;
-            }
-            if (Score != 0 && ((_alpha * _alpha) * (y - _X10 - _eta) >= _mu0 * _fi - _ro + _q))
-            {
-                Score = 2;
-            }
-            else Score = -1;
+            if (y > x + _eta && _score == -1) _score = -1;
+            if (_score != 2 && (y == x + _eta || (_alpha * _alpha) * (y - _X10 - _eta) < _mu0 * _fi - _ro + _q)) _score = 1;
+            if (_score != -1 && ((_alpha * _alpha) * (y - _X10 - _eta) >= _mu0 * _fi - _ro + _q)) _score = 2;
+            else _score = -1;
         }
         
         public double getZfunction(double x, double y, double tau)
         {
-            if (Score  == 0)
+            if (_score  == -1)
             {
                 return -_ro - (_mu * Math.Cos(tau));
             }
-            if (Score == 1)
+            if (_score == 1)
             {
                 return -_ro - (_mu * Math.Cos(tau)) - (_alpha0 * _alpha0) * (y - _X10 - _eta);
             }
-            if (Score == 2)
+            if (_score == 2)
             {
                 return -_ro - (_mu * Math.Cos(tau)) - (_alpha0 * _alpha0) * (y - x - _eta);
             }
@@ -124,7 +113,7 @@ namespace WindowsFormsApp10
         }
         public double getZ1function(double x, double y, double z1)
         {
-            if (Score == 2)
+            if (_score == 2)
             {
                 return -(_alpha * _alpha) * (x - y + _eta) - _mu0 * _fi * Math.Sign(z1) - _ro + _q;
             }
