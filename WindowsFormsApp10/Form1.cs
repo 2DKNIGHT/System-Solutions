@@ -42,7 +42,7 @@ namespace WindowsFormsApp10
             {
                 seriesname[k] = k.ToString();
                 this.chart1.Series.Add(seriesname[k]);
-                this.chart1.Series[seriesname[k]].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                this.chart1.Series[seriesname[k]].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
                 this.chart1.Series[seriesname[k]].BorderWidth = 2;
             }
             for(int k = 0; k < this.chart1.Series.Count; k++)
@@ -54,11 +54,10 @@ namespace WindowsFormsApp10
                 this.chart1.Series[k].Points.AddXY(tau, arrayofsolutions[k]);
             }
             SystemSolution solutions = new SystemSolution(nu,ro,alpha,mu0,fi,q,X10,mu,alpha0); // y, x, z, z1
-            solutions.Score = -1;
             solutions.Time = 0;
             solutions.DeltaTime = h;
-            solutions.Count = 0;
-            while(solutions.Time <= 100.0)
+            solutions.Score = -1;
+            while(solutions.Time <= 30)
             {
                 arrayofsolutions = solutions.RungeKuttaMerson(x,y,dx,dy);
                 if (arrayofsolutions.Sum() - Tmp.Sum() != 0)
@@ -72,7 +71,6 @@ namespace WindowsFormsApp10
                     this.chart1.Series[1].Points.AddXY(solutions.Time, y);
                 }
             }
-            GC.Collect();
 
         }
         
