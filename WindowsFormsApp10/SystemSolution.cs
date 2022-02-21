@@ -21,7 +21,7 @@ namespace WindowsFormsApp10
         private int _score;
         private int _count;
         private double h; 
-        private const double e_tol = 1e-4;
+        private const double e_tol = 0.018;
         private double _tau;
         public int Score { get { return _score; } set { this._score = value; } }
         public double Time { get { return _tau;} set { this._tau = value;} }
@@ -52,12 +52,12 @@ namespace WindowsFormsApp10
         public double[] RungeKuttaMerson(double x, double y, double z1, double z)
         {
             Score = getscore(x, y);
-            if(Score == 0)
+            if (Score == 0)
             {
                 y = x + _eta;
             }
-            Score = getscore(x,y);
-            if(Score == 1)
+            Score = getscore(x, y);
+            if (Score == 1)
             {
                 x = _X10;
             }
@@ -65,27 +65,28 @@ namespace WindowsFormsApp10
             double[] Solution = new double[4] { y, x, z, z1 };
             double[] EstimateError = new double[4];
             double[] k1 = InitializeStep(x, y, z1, z, Time);
-            double[] k2 = InitializeStep(x + (1.0 / 3.0) * k1[1], y + (1.0 / 3.0) * k1[0], z1 + (1.0 / 3.0) * k1[3], z + (1.0 / 3.0) * k1[2], Time + h / 3.0);
-            double[] k3 = InitializeStep(x + (1.0 / 6.0) * (k1[1] + k2[1]), y + (1.0 / 6.0) * (k1[0] + k2[0]), z1 + (1.0 / 6.0) * (k1[3] + k2[3]), z + (1.0 / 6.0) * (k1[2] + k2[2]), Time + h / 3);
-            double[] k4 = InitializeStep(x + (1.0 / 8.0) * (k1[1] + 3 * k3[1]), y + (1.0 / 8.0) * (k1[0] + 3 * k3[0]), z1 + (1.0 / 8.0) * (k1[3] + 3 * k3[3]), z + (1.0 / 8.0) * (k1[2] + 3 * k3[2]), Time + h / 2);
-            double[] k5 = InitializeStep(x + (1.0 / 2.0) * (k1[1] - 3 * k3[1] + 4 * k4[1]), y + (1.0 / 2.0) * (k1[0] - 3 * k3[0] + 4 * k4[0]), z1 + (1.0 / 2.0) * (k1[3] - 3 * k3[3] + 4 * k4[3]), z + (1.0 / 2.0) * (k1[2] - 3 * k3[2] + 4 * k4[2]), Time + h);
+            double[] k2 = InitializeStep(x + k1[1], y + k1[0], z1 + k1[3], z + k1[2], Time + h * (1.0 / 3.0));
+            double[] k3 = InitializeStep(x + (1.0 / 2.0) * (k1[1] + k2[1]), y + (1.0 / 2.0) * (k1[0] + k2[0]), z1 + (1.0 / 2.0) * (k1[3] + k2[3]), z + (1.0 / 2.0) * (k1[2] + k2[2]), Time + h * (1.0 / 3.0));
+            double[] k4 = InitializeStep(x + (1.0 / 8.0) * (3 * k1[1] + 9 * k3[1]), y + (1.0 / 8.0) * (3 * k1[0] + 9 * k3[0]), z1 + (1.0 / 8.0) * (3 * k1[3] + 9 * k3[3]), z + (1.0 / 8.0) * (3 * k1[2] + 9 * k3[2]), Time + h * (1.0 / 2.0));
+            double[] k5 = InitializeStep(x + (1.0 / 2.0) * (3 * k1[1] - 9 * k3[1]) + 6 * k4[1], y + (1.0 / 2.0) * (3 * k1[0] - 9 * k3[0]) + 4 * k4[0], z1 + (1.0 / 2.0) * (3 * k1[3] - 9 * k3[3]) + 4 * k4[3], z + (1.0 / 2.0) * (3 * k1[2] - 9 * k3[2]) + 4 * k4[2], Time + h);
+
 
             for (int i = 0; i < Solution.Length; i++)
             {
-                Solution[i] += (1.0 / 6.0) * (k1[i] + 4 * k4[i] + k5[i]);
-                EstimateError[i] = (1.0 / 30.0) * (2 * k1[i] - 9 * k3[i] + 8 * k4[i] - k5[i]);
+                k2[i] /= 3.0; k3[i] /= 3.0; k4[i] /= 3.0; k5[i] /= 3.0;
+                Solution[i] += (1.0 / 2.0) * (k1[i] + 4 * k4[i] + k5[i]);
+                EstimateError[i] = k1[i] - (9.0 / 2.0) * k3[i] + 4 * k4[i] - (1.0 / 2.0) * k5[i];
             }
-            //if (Math.Abs(EstimateError[0]) < e_tol / 64.0 || Math.Abs(EstimateError[1]) < e_tol / 64.0 || Math.Abs(EstimateError[2]) < e_tol / 64.0 || Math.Abs(EstimateError[3]) < e_tol / 64.0) h *= 2.0;
-            
-            //else if (Math.Abs(EstimateError[0]) > e_tol || Math.Abs(EstimateError[1]) > e_tol || Math.Abs(EstimateError[2]) > e_tol || Math.Abs(EstimateError[3]) > e_tol) h /= 2.0;
+        
             for(int i = 0; i < EstimateError.Length; i++)
             {
                 if(Math.Abs(EstimateError[i]) > max) max = Math.Abs(EstimateError[i]);
             }
-            double[] Tmp = new double[4] { y, x, z, z1 }; 
-            if (max < e_tol / 64)
+            
+            double[] Tmp = new double[4] { y, x, z, z1 };
+            if (max < (5.0 / 32.0) * e_tol)
             { h *= 2; return Tmp; }
-            else if (max > e_tol)
+            else if (max > 5 * e_tol)
             { h /= 2; return Tmp; }
             Time += h;
             return Solution;
@@ -95,7 +96,7 @@ namespace WindowsFormsApp10
         {
             if(_score == -1 && y > x + _eta) return _score = -1;
             else if (_score == -1 && y <= x + _eta) return _score = 0;
-            else if((_score == 0 || _score == 1)  && Math.Pow(_alpha0,2) * (x - y - _eta) < _mu0 * _fi - _ro + _q) return _score = 1;
+            else if((_score == 0 || _score == 1)  && Math.Pow(_alpha0,2) * (x - y + _eta) < _mu0 * _fi - _ro + _q) return _score = 1;
             else if((_score == 1 || _score == 2) && Math.Pow(_alpha0, 2) * (x - y + _eta) >= _mu0 * _fi - _ro + _q)  return _score = 2;
             else if(_score == 2) return _score = -1;
             return _score;
