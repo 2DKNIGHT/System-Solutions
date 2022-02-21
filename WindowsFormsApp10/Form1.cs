@@ -35,8 +35,9 @@ namespace WindowsFormsApp10
             mu = double.Parse(textBox13.Text),
             alpha0 = double.Parse(textBox14.Text),
             tau = 0;
-            double[] arrayofsolutions = new double[4] {y,x,dy,dx};
-            string[] seriesname = new string[arrayofsolutions.Length];
+            double[] arrayofsolutions = new double[4] { y, x, dy, dx };
+            var Tmp = arrayofsolutions;
+            string[] seriesname = new string[4];
             for(int k = 0; k < seriesname.Length; k++)
             {
                 seriesname[k] = k.ToString();
@@ -48,26 +49,33 @@ namespace WindowsFormsApp10
             {
                 this.chart1.Series[k].Points.Clear();
             }
-            for (int k = 0; k < arrayofsolutions.Length; k++)
+            for (int k = 0; k < this.chart1.Series.Count; k++)
             {
                 this.chart1.Series[k].Points.AddXY(tau, arrayofsolutions[k]);
             }
             SystemSolution solutions = new SystemSolution(nu,ro,alpha,mu0,fi,q,X10,mu,alpha0); // y, x, z, z1
             solutions.Score = -1;
-            for (tau = h; tau < 200; tau += h)
+            solutions.Time = 0;
+            solutions.DeltaTime = h;
+            solutions.Count = 0;
+            while(solutions.Time <= 100.0)
             {
-                arrayofsolutions = solutions.RungeKutta(x, y, dy, tau, h, dx);
-                x = arrayofsolutions[3];
-                y = arrayofsolutions[2];
-                dx = arrayofsolutions[1];
-                dy = arrayofsolutions[0];
-                this.chart1.Series[0].Points.AddXY(tau, x);
-                this.chart1.Series[1].Points.AddXY(tau, y);
+                arrayofsolutions = solutions.RungeKuttaMerson(x,y,dx,dy);
+                if (arrayofsolutions.Sum() - Tmp.Sum() != 0)
+                {
+                    Tmp = arrayofsolutions;
+                    x = arrayofsolutions[1];
+                    y = arrayofsolutions[0];
+                    dx = arrayofsolutions[3];
+                    dy = arrayofsolutions[2];
+                    this.chart1.Series[0].Points.AddXY(solutions.Time, x);
+                    this.chart1.Series[1].Points.AddXY(solutions.Time, y);
+                }
             }
-            
+            GC.Collect();
 
         }
-
+        
 
     }
 }
