@@ -98,6 +98,7 @@ namespace WindowsFormsApp10
             else if((_score == 0 || _score == 1)  && Math.Pow(_alpha0,2) * (x - y - _eta) < _mu0 * _fi - _ro + _q) return _score = 1;
             else if((_score == 1 || _score == 2) && Math.Pow(_alpha0, 2) * (x - y + _eta) >= _mu0 * _fi - _ro + _q)  return _score = 2;
             else if(_score == 2) return _score = -1;
+            return _score;
         }
         public double getZfunction(double x, double y, double tau)
         {
