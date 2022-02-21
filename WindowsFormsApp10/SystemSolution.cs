@@ -67,15 +67,15 @@ namespace WindowsFormsApp10
             double[] k1 = InitializeStep(x, y, z1, z, Time);
             double[] k2 = InitializeStep(x + k1[1], y + k1[0], z1 + k1[3], z + k1[2], Time + h * (1.0 / 3.0));
             double[] k3 = InitializeStep(x + (1.0 / 2.0) * (k1[1] + k2[1]), y + (1.0 / 2.0) * (k1[0] + k2[0]), z1 + (1.0 / 2.0) * (k1[3] + k2[3]), z + (1.0 / 2.0) * (k1[2] + k2[2]), Time + h * (1.0 / 3.0));
-            double[] k4 = InitializeStep(x + (1.0 / 8.0) * (3 * k1[1] + 9 * k3[1]), y + (1.0 / 8.0) * (3 * k1[0] + 9 * k3[0]), z1 + (1.0 / 8.0) * (3 * k1[3] + 9 * k3[3]), z + (1.0 / 8.0) * (3 * k1[2] + 9 * k3[2]), Time + h * (1.0 / 2.0));
-            double[] k5 = InitializeStep(x + (1.0 / 2.0) * (3 * k1[1] - 9 * k3[1]) + 6 * k4[1], y + (1.0 / 2.0) * (3 * k1[0] - 9 * k3[0]) + 4 * k4[0], z1 + (1.0 / 2.0) * (3 * k1[3] - 9 * k3[3]) + 4 * k4[3], z + (1.0 / 2.0) * (3 * k1[2] - 9 * k3[2]) + 4 * k4[2], Time + h);
+            double[] k4 = InitializeStep(x + (1.0 / 8.0) * (3.0 * k1[1] + 9.0 * k3[1]), y + (1.0 / 8.0) * (3.0 * k1[0] + 9.0 * k3[0]), z1 + (1.0 / 8.0) * (3.0 * k1[3] + 9.0 * k3[3]), z + (1.0 / 8.0) * (3.0 * k1[2] + 9.0 * k3[2]), Time + h * (1.0 / 2.0));
+            double[] k5 = InitializeStep(x + (1.0 / 2.0) * (3.0 * k1[1] - 9.0 * k3[1]) + 6.0 * k4[1], y + (1.0 / 2.0) * (3.0 * k1[0] - 9.0 * k3[0]) + 4.0 * k4[0], z1 + (1.0 / 2.0) * (3.0 * k1[3] - 9.0 * k3[3]) + 4.0 * k4[3], z + (1.0 / 2.0) * (3.0 * k1[2] - 9.0 * k3[2]) + 4.0 * k4[2], Time + h);
 
 
             for (int i = 0; i < Solution.Length; i++)
             {
                 k2[i] /= 3.0; k3[i] /= 3.0; k4[i] /= 3.0; k5[i] /= 3.0;
-                Solution[i] += (1.0 / 2.0) * (k1[i] + 4 * k4[i] + k5[i]);
-                EstimateError[i] = k1[i] - (9.0 / 2.0) * k3[i] + 4 * k4[i] - (1.0 / 2.0) * k5[i];
+                Solution[i] += (1.0 / 2.0) * (k1[i] + 4.0 * k4[i] + k5[i]);
+                EstimateError[i] = k1[i] - (9.0 / 2.0) * k3[i] + 4.0 * k4[i] - (1.0 / 2.0) * k5[i];
             }
         
             for(int i = 0; i < EstimateError.Length; i++)
@@ -84,6 +84,7 @@ namespace WindowsFormsApp10
             }
             
             double[] Tmp = new double[4] { y, x, z, z1 };
+
             if (max < (5.0 / 32.0) * e_tol)
             { h *= 2; return Tmp; }
             else if (max > 5 * e_tol)
