@@ -16,6 +16,7 @@ namespace WindowsFormsApp10
         {
             InitializeComponent();
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
             this.chart1.Series.Clear();
@@ -42,7 +43,7 @@ namespace WindowsFormsApp10
             {
                 seriesname[k] = k.ToString();
                 this.chart1.Series.Add(seriesname[k]);
-                this.chart1.Series[seriesname[k]].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
+                this.chart1.Series[seriesname[k]].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
                 this.chart1.Series[seriesname[k]].BorderWidth = 2;
             }
             for(int k = 0; k < this.chart1.Series.Count; k++)
@@ -62,13 +63,23 @@ namespace WindowsFormsApp10
                 arrayofsolutions = solutions.RungeKuttaMerson(x,y,dx,dy);
                 if (arrayofsolutions.Sum() - Tmp.Sum() != 0)
                 {
-                    Tmp = arrayofsolutions;
                     x = arrayofsolutions[1];
                     y = arrayofsolutions[0];
                     dx = arrayofsolutions[3];
                     dy = arrayofsolutions[2];
-                    this.chart1.Series[0].Points.AddXY(solutions.Time, x);
-                    this.chart1.Series[1].Points.AddXY(solutions.Time, y);
+                    this.chart1.Series[0].Points.AddXY(solutions.Time, y);
+                    this.chart1.Series[1].Points.AddXY(solutions.Time, x);
+                    solutions.Score = solutions.getscore(x, y);
+                    if(solutions.Score == 0)
+                    {
+                        y = x + nu;
+                    }
+                    solutions.Score = solutions.getscore(x, y);
+                    if(solutions.Score == 1)
+                    {
+                        x = X10;
+                    }
+                    Tmp[0] = y; Tmp[1] = x; Tmp[2] = dy; Tmp[3] = dx;
                 }
             }
 
