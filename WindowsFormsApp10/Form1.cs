@@ -58,8 +58,18 @@ namespace WindowsFormsApp10
             solutions.Time = 0;
             solutions.DeltaTime = h;
             solutions.Score = -1;
-            while(solutions.Time <= 30)
+            while(solutions.Time <= 100)
             {
+                solutions.Score = solutions.getscore(x, y);
+                if (solutions.Score == 0)
+                {
+                    y = x + nu;
+                }
+                solutions.Score = solutions.getscore(x, y);
+                if (solutions.Score == 1)
+                {
+                    x = X10;
+                } 
                 arrayofsolutions = solutions.RungeKuttaMerson(x,y,dx,dy);
                 if (arrayofsolutions.Sum() - Tmp.Sum() != 0)
                 {
@@ -69,16 +79,6 @@ namespace WindowsFormsApp10
                     dy = arrayofsolutions[2];
                     this.chart1.Series[0].Points.AddXY(solutions.Time, y);
                     this.chart1.Series[1].Points.AddXY(solutions.Time, x);
-                    solutions.Score = solutions.getscore(x, y);
-                    if(solutions.Score == 0)
-                    {
-                        y = x + nu;
-                    }
-                    solutions.Score = solutions.getscore(x, y);
-                    if(solutions.Score == 1)
-                    {
-                        x = X10;
-                    }
                     Tmp[0] = y; Tmp[1] = x; Tmp[2] = dy; Tmp[3] = dx;
                 }
             }
