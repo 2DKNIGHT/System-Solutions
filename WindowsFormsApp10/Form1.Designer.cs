@@ -61,6 +61,10 @@ namespace WindowsFormsApp10
             this.label13 = new System.Windows.Forms.Label();
             this.textBox14 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBox16 = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -327,12 +331,50 @@ namespace WindowsFormsApp10
             this.label14.TabIndex = 29;
             this.label14.Text = "Введите α0\t";
             // 
+            // textBox15
+            // 
+            this.textBox15.Location = new System.Drawing.Point(143, 58);
+            this.textBox15.Name = "textBox15";
+            this.textBox15.Size = new System.Drawing.Size(100, 20);
+            this.textBox15.TabIndex = 30;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Times New Roman", 12F);
+            this.label15.Location = new System.Drawing.Point(139, 81);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(175, 19);
+            this.label15.TabIndex = 31;
+            this.label15.Text = "Введите конечное время";
+            // 
+            // textBox16
+            // 
+            this.textBox16.Location = new System.Drawing.Point(143, 103);
+            this.textBox16.Name = "textBox16";
+            this.textBox16.Size = new System.Drawing.Size(100, 20);
+            this.textBox16.TabIndex = 32;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Times New Roman", 12F);
+            this.label16.Location = new System.Drawing.Point(139, 126);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(219, 19);
+            this.label16.TabIndex = 33;
+            this.label16.Text = "Введите точность вычислений";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.ClientSize = new System.Drawing.Size(1386, 760);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.textBox16);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.textBox15);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.textBox14);
             this.Controls.Add(this.label13);
@@ -403,6 +445,10 @@ namespace WindowsFormsApp10
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox textBox14;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox textBox15;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox textBox16;
+        private System.Windows.Forms.Label label16;
     }
 }
 

@@ -35,6 +35,8 @@ namespace WindowsFormsApp10
             x = double.Parse(textBox12.Text),
             mu = double.Parse(textBox13.Text),
             alpha0 = double.Parse(textBox14.Text),
+            endtime = double.Parse(textBox15.Text),
+            epsilon = double.Parse(textBox16.Text),
             tau = 0;
             double[] arrayofsolutions = new double[4] { y, x, dy, dx };
             var Tmp = arrayofsolutions;
@@ -54,32 +56,27 @@ namespace WindowsFormsApp10
             {
                 this.chart1.Series[k].Points.AddXY(tau, arrayofsolutions[k]);
             }
-            SystemSolution solutions = new SystemSolution(nu,ro,alpha,mu0,fi,q,X10,mu,alpha0); // y, x, z, z1
+            SystemSolution solutions = new SystemSolution(nu,ro,alpha,mu0,fi,q,X10,mu,alpha0, epsilon); // y, x, z, z1
             solutions.Time = 0;
             solutions.DeltaTime = h;
-            solutions.Score = 4;
-            while(solutions.Time <= 4)
+            solutions.Score = -1;
+            while(solutions.Time <= endtime)
             {
-                solutions.Score = solutions.getscore(x, y);
-                if (solutions.Score == 0)
-                {
-                    y = x + nu;
-                }
-                solutions.Score = solutions.getscore(x, y);
-                if (solutions.Score == 1)
-                {
-                    x = solutions.X0;
-                } 
-                
                 arrayofsolutions = solutions.RungeKuttaMerson(x,y,dx,dy);
                 if (arrayofsolutions.Sum() - Tmp.Sum() != 0)
                 {
-                    if (solutions.Time > 4) break;
+                    if (solutions.Time > endtime) break;
                     x = arrayofsolutions[1];
                     y = arrayofsolutions[0];
                     dx = arrayofsolutions[3];
                     dy = arrayofsolutions[2];
-                    if(solutions.Score == 2)
+                    solutions.Score = solutions.getscore(x, y);
+                    if (solutions.Score == 0)
+                    {
+                        y = x + nu;
+                    }
+                    solutions.Score = solutions.getscore(x, y);
+                    if (solutions.Score == 2)
                     {
                         solutions.X0 = x;
                     }
@@ -90,7 +87,7 @@ namespace WindowsFormsApp10
             }
 
         }
-        
+
 
     }
 }
